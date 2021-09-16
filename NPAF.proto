@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+enum AddressFamily {
+    IPV4 = 0;
+    IPV6 = 1;
+    VPNV4 = 2;
+    VPNV6 = 3;
+    L2VPN = 4;
+}
+
+
+enum SubAddressFamily {
+  UNICAST = 0;
+  MULTICAST = 1;
+  EVPN2 = 2;
+}
+
+
+message Routes {
+    AddressFamily afi = 1;
+    SubAddressFamily safi = 2;
+
+    message Route {
+        string route = 1;
+        string next_hop = 2;
+    }
+
+    repeated Route route = 3;
+}
+
+
+message DeviceRoutes {
+    int32 id = 1;
+    string hostname = 2;
+    int64 routes_number = 3;
+    Routes routes = 4;
+}
+
+
+message RouteRequest {
+    string hostname = 1;
+    AddressFamily afi = 2;
+    SubAddressFamily safi = 3;
+}
+
+
+service RouteData {
+    rpc CollectRoutes(RouteRequest) returns (DeviceRoutes) {}
+}
